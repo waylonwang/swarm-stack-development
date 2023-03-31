@@ -1,0 +1,50 @@
+version: "3.4"
+
+services:
+  # Gogs
+  gogs:
+    image: gogs/gogs:latest
+    #ports:
+      #- "42022:22"
+      #- "42030:3000"
+    networks:
+      - network_cluster       
+    restart: always
+    volumes:
+      - nfs_gogs_data:/data
+      #- $DockerVolume/docker/mount/development_service/gogs/conf/editorconfig:/app/gogs/.editorconfig
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.gogs.rule=Host(`git.${DOMAIN_SWARM}`)"
+        - "traefik.http.routers.gogs.entrypoints=websecure"
+        - "traefik.http.routers.gogs.service=gogs"
+        - "traefik.http.routers.gogs.middlewares=noauth-chain@file"
+        - "traefik.http.services.gogs.loadbalancer.server.port=3000"       
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.type == vm 
+          - node.labels.media == true
+
+networks:
+  network_cluster:
+    external: true
+
+x-common-keys-volume: &common-keys-volume
+  type: nfs
+  o: addr=${NFS_SERVER},rw,nfsvers=4
+  
+volumes:
+ # NFS
+  nfs_gogs_data: 
+    driver: local
+    driver_opts:
+      <<: *common-keys-volume
+      device: :${NFS_DEVICE}/development/gogs/data
+  nfs_gogs_conf: 
+    driver: local
+    driver_opts:
+      <<: *common-keys-volume
+      device: :${NFS_DEVICE}/development/gogs/conf
