@@ -16,7 +16,7 @@ services:
     deploy:
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.gogs.rule=Host(`git.${DOMAIN_SWARM}`)"
+        - "traefik.http.routers.gogs.rule=Host(`gogs.${DOMAIN_SWARM}`)"
         - "traefik.http.routers.gogs.entrypoints=websecure"
         - "traefik.http.routers.gogs.service=gogs"
         - "traefik.http.routers.gogs.middlewares=noauth-chain@file"
