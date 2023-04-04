@@ -32,6 +32,36 @@ services:
           - node.labels.type == vm 
           - node.labels.development == true
 
+  # Gitea
+  gitea:
+    image: gitea/gitea:latest
+    #ports:
+      #- "42022:22"
+      #- "42030:3000"
+    networks:
+      - network_cluster       
+    restart: always
+    volumes:
+      - nfs_gitea:/data
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.gitea.rule=Host(`git.${DOMAIN_SWARM}`)"
+        - "traefik.http.routers.gitea.entrypoints=websecure"
+        - "traefik.http.routers.gitea.service=gitea"
+        - "traefik.http.routers.gitea.middlewares=noauth-chain@file"
+        - "traefik.http.services.gitea.loadbalancer.server.port=3000"
+        - "traefik.tcp.routers.gitea_ssh.rule=HostSNI(`*`)"     
+        - "traefik.tcp.routers.gitea_ssh.entrypoints=ssh"   
+        - "traefik.tcp.routers.gitea_ssh.service=gitea_ssh"
+        - "traefik.tcp.services.gitea_ssh.loadbalancer.server.port=22"
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.type == vm 
+          - node.labels.development == true          
+
 networks:
   network_cluster:
     external: true
@@ -52,3 +82,8 @@ volumes:
     driver_opts:
       <<: *common-keys-volume
       device: :${NFS_DEVICE}/development/gogs/conf
+  nfs_gitea: 
+    driver: local
+    driver_opts:
+      <<: *common-keys-volume
+      device: :${NFS_DEVICE}/development/gitea/data      
