@@ -20,7 +20,12 @@ services:
         - "traefik.http.routers.gogs.entrypoints=websecure"
         - "traefik.http.routers.gogs.service=gogs"
         - "traefik.http.routers.gogs.middlewares=noauth-chain@file"
-        - "traefik.http.services.gogs.loadbalancer.server.port=3000"       
+        - "traefik.http.services.gogs.loadbalancer.server.port=3000"
+        - "traefik.tcp.routers.gogs_ssh.rule=HostSNI(`*`)"     
+        - "traefik.tcp.routers.gogs_ssh.entrypoints=ssh"   
+        - "traefik.tcp.routers.gogs_ssh.service=gogs_ssh"
+        - "traefik.tcp.routers.gogs_ssh.middlewares=noauth-chain@file"
+        - "traefik.tcp.services.gogs_ssh.loadbalancer.server.port=22"
       mode: replicated
       replicas: 1
       placement:
