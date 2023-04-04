@@ -35,7 +35,7 @@ networks:
 x-common-keys-volume: &common-keys-volume
   type: nfs
   o: addr=${NFS_SERVER},rw,nfsvers=4
-  
+
 volumes:
  # NFS
   nfs_gogs_data: 
