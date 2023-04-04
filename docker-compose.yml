@@ -10,8 +10,8 @@ services:
     networks:
       - network_cluster       
     restart: always
-    #volumes:
-      #- nfs_gogs_data:/data
+    volumes:
+      - nfs_gogs_data:/data
       #- $DockerVolume/docker/mount/development_service/gogs/conf/editorconfig:/app/gogs/.editorconfig
     deploy:
       labels:
