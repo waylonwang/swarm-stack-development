@@ -4,12 +4,14 @@ services:
   # Gogs
   gogs:
     image: gogs/gogs:latest
-    networks:
-      - network_cluster
-    restart: always
+    networks: [network_cluster]
+    restart: on-failure
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: ${TZ}    
     volumes:
       - nfs_gogs_data:/data
-      #- $DockerVolume/docker/mount/development_service/gogs/conf/editorconfig:/app/gogs/.editorconfig
     deploy:
       labels:
         - "traefik.enable=true"
@@ -32,16 +34,12 @@ services:
   # Gitea
   gitea:
     image: gitea/gitea:latest
-    #ports:
-    #- "42022:22"
-    #- "42030:3000"
-    networks:
-      - network_cluster
-    restart: always
+    networks: [network_cluster]
+    restart: on-failure
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=${TZ}
+      PUID: 1000
+      PGID: 1000
+      TZ: ${TZ} 
     volumes:
       - nfs_gitea:/data
     deploy:
@@ -65,19 +63,18 @@ services:
 
   code-server:
     image: lscr.io/linuxserver/code-server:latest
-    # ports:
-    #   - 8443:8443
-    networks:
-      - network_cluster
-    restart: unless-stopped
+    networks: [network_cluster]
+    restart: on-failure
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=${TZ}
-      - PASSWORD=${CODESERVER_PASSWORD}
-      - SUDO_PASSWORD=${CODESERVER_SUDO_PASSWORD}
+      PUID: 1000
+      PGID: 1000
+      PASSWORD: ${CODESERVER_PASSWORD}
+      SUDO_PASSWORD: ${CODESERVER_SUDO_PASSWORD}
+      TZ: ${TZ} 
     volumes:
-      - nfs_code-server:/config
+      - nfs_code-server_data:/config
+      - nfs_code-server_attach_base:/swarm/base
+      - nfs_code-server_attach_public:/swarm/public
     deploy:
       labels:
         - "traefik.enable=true"
@@ -118,8 +115,18 @@ volumes:
     driver_opts:
       <<: *common-keys-volume
       device: :${NFS_DEVICE}/development/gitea/data
-  nfs_code-server:
+  nfs_code-server_data:
     driver: local
     driver_opts:
       <<: *common-keys-volume
       device: :${NFS_DEVICE}/development/code-server
+  nfs_code-server_attach_base:
+    driver: local
+    driver_opts:
+      <<: *common-keys-volume
+      device: :${NFS_DEVICE}/base
+  nfs_code-server_attach_public:
+    driver: local
+    driver_opts:
+      <<: *common-keys-volume
+      device: :${NFS_DEVICE}/public
