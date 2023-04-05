@@ -84,7 +84,7 @@ services:
     deploy:
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.code-server.rule=Host(`git.${DOMAIN_SWARM}`)"
+        - "traefik.http.routers.code-server.rule=Host(`code.${DOMAIN_SWARM}`)"
         - "traefik.http.routers.code-server.entrypoints=websecure"
         - "traefik.http.routers.code-server.service=code-server"
         - "traefik.http.routers.code-server.middlewares=noauth-chain@file"
