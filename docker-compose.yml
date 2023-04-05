@@ -4,11 +4,8 @@ services:
   # Gogs
   gogs:
     image: gogs/gogs:latest
-    #ports:
-      #- "42022:22"
-      #- "42030:3000"
     networks:
-      - network_cluster       
+      - network_cluster
     restart: always
     volumes:
       - nfs_gogs_data:/data
@@ -21,30 +18,30 @@ services:
         - "traefik.http.routers.gogs.service=gogs"
         - "traefik.http.routers.gogs.middlewares=noauth-chain@file"
         - "traefik.http.services.gogs.loadbalancer.server.port=3000"
-        - "traefik.tcp.routers.gogs_ssh.rule=HostSNI(`*`)"     
-        - "traefik.tcp.routers.gogs_ssh.entrypoints=ssh"   
+        - "traefik.tcp.routers.gogs_ssh.rule=HostSNI(`*`)"
+        - "traefik.tcp.routers.gogs_ssh.entrypoints=ssh"
         - "traefik.tcp.routers.gogs_ssh.service=gogs_ssh"
         - "traefik.tcp.services.gogs_ssh.loadbalancer.server.port=22"
       mode: replicated
       replicas: 1
       placement:
         constraints:
-          - node.labels.type == vm 
+          - node.labels.type == vm
           - node.labels.development == true
 
   # Gitea
   gitea:
     image: gitea/gitea:latest
     #ports:
-      #- "42022:22"
-      #- "42030:3000"
+    #- "42022:22"
+    #- "42030:3000"
     networks:
-      - network_cluster       
+      - network_cluster
     restart: always
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=${TZ}    
+      - TZ=${TZ}
     volumes:
       - nfs_gitea:/data
     deploy:
@@ -55,24 +52,24 @@ services:
         - "traefik.http.routers.gitea.service=gitea"
         - "traefik.http.routers.gitea.middlewares=noauth-chain@file"
         - "traefik.http.services.gitea.loadbalancer.server.port=3000"
-        - "traefik.tcp.routers.gitea_ssh.rule=HostSNI(`*`)"     
-        - "traefik.tcp.routers.gitea_ssh.entrypoints=ssh"   
+        - "traefik.tcp.routers.gitea_ssh.rule=HostSNI(`*`)"
+        - "traefik.tcp.routers.gitea_ssh.entrypoints=ssh"
         - "traefik.tcp.routers.gitea_ssh.service=gitea_ssh"
         - "traefik.tcp.services.gitea_ssh.loadbalancer.server.port=22"
       mode: replicated
       replicas: 1
       placement:
         constraints:
-          - node.labels.type == vm 
-          - node.labels.development == true          
+          - node.labels.type == vm
+          - node.labels.development == true
 
   code-server:
     image: lscr.io/linuxserver/code-server:latest
     # ports:
-    #   - 8443:8443       
+    #   - 8443:8443
     networks:
-      - network_cluster   
-    restart: unless-stopped   
+      - network_cluster
+    restart: unless-stopped
     environment:
       - PUID=1000
       - PGID=1000
@@ -93,7 +90,7 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.labels.type == vm 
+          - node.labels.type == vm
           - node.labels.development == true
 
 networks:
@@ -106,23 +103,23 @@ x-common-keys-volume: &common-keys-volume
 
 volumes:
   # NFS
-  nfs_gogs_data: 
+  nfs_gogs_data:
     driver: local
     driver_opts:
       <<: *common-keys-volume
       device: :${NFS_DEVICE}/development/gogs/data
-  nfs_gogs_conf: 
+  nfs_gogs_conf:
     driver: local
     driver_opts:
       <<: *common-keys-volume
       device: :${NFS_DEVICE}/development/gogs/conf
-  nfs_gitea: 
+  nfs_gitea:
     driver: local
     driver_opts:
       <<: *common-keys-volume
-      device: :${NFS_DEVICE}/development/gitea/data    
-  nfs_code-server: 
+      device: :${NFS_DEVICE}/development/gitea/data
+  nfs_code-server:
     driver: local
     driver_opts:
       <<: *common-keys-volume
-      device: :${NFS_DEVICE}/development/code-server                 
+      device: :${NFS_DEVICE}/development/code-server
