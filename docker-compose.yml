@@ -78,9 +78,7 @@ services:
       - PGID=1000
       - TZ=${TZ}
     volumes:
-      - nfs_code-server_conf:/config
-      - nfs_code-server_project:/home/coder/project
-      - nfs_code-server_share:/home/coder/.local/share/code-server
+      - nfs_code-server:/config
     deploy:
       labels:
         - "traefik.enable=true"
@@ -121,18 +119,8 @@ volumes:
     driver_opts:
       <<: *common-keys-volume
       device: :${NFS_DEVICE}/development/gitea/data    
-  nfs_code-server_conf: 
+  nfs_code-server: 
     driver: local
     driver_opts:
       <<: *common-keys-volume
-      device: :${NFS_DEVICE}/development/code-server/conf 
-  nfs_code-server_project: 
-    driver: local
-    driver_opts:
-      <<: *common-keys-volume
-      device: :${NFS_DEVICE}/development/code-server/project 
-  nfs_code-server_share: 
-    driver: local
-    driver_opts:
-      <<: *common-keys-volume
-      device: :${NFS_DEVICE}/development/code-server/share                        
+      device: :${NFS_DEVICE}/development/code-server                 
