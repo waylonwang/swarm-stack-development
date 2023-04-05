@@ -77,6 +77,8 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=${TZ}
+      - PASSWORD=${CODESERVER_PASSWORD}
+      - SUDO_PASSWORD=${CODESERVER_SUDO_PASSWORD}
     volumes:
       - nfs_code-server:/config
     deploy:
