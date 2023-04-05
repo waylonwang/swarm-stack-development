@@ -41,6 +41,10 @@ services:
     networks:
       - network_cluster       
     restart: always
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${TZ}    
     volumes:
       - nfs_gitea:/data
     deploy:
@@ -62,6 +66,36 @@ services:
           - node.labels.type == vm 
           - node.labels.development == true          
 
+  code-server：
+    image: lscr.io/linuxserver/code-server:latest
+    # ports:
+    #   - 8443:8443       
+    networks:
+      - network_cluster   
+    restart: unless-stopped   
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${TZ}
+    volumes:
+      - nfs_code-server_conf:/config
+      - nfs_code-server_project:/home/coder/project
+      - nfs_code-server_share:/home/coder/.local/share/code-server
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.code-server.rule=Host(`git.${DOMAIN_SWARM}`)"
+        - "traefik.http.routers.code-server.entrypoints=websecure"
+        - "traefik.http.routers.code-server.service=code-server"
+        - "traefik.http.routers.code-server.middlewares=noauth-chain@file"
+        - "traefik.http.services.code-server.loadbalancer.server.port=8443"
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.type == vm 
+          - node.labels.development == true  
+
 networks:
   network_cluster:
     external: true
@@ -71,7 +105,7 @@ x-common-keys-volume: &common-keys-volume
   o: addr=${NFS_SERVER},rw,nfsvers=4
 
 volumes:
- # NFS
+  # NFS
   nfs_gogs_data: 
     driver: local
     driver_opts:
@@ -86,4 +120,19 @@ volumes:
     driver: local
     driver_opts:
       <<: *common-keys-volume
-      device: :${NFS_DEVICE}/development/gitea/data      
+      device: :${NFS_DEVICE}/development/gitea/data    
+  nfs_code-server_conf: 
+    driver: local
+    driver_opts:
+      <<: *common-keys-volume
+      device: :${NFS_DEVICE}/development/code-server/conf 
+  nfs_code-server_project: 
+    driver: local
+    driver_opts:
+      <<: *common-keys-volume
+      device: :${NFS_DEVICE}/development/code-server/project 
+  nfs_code-server_share: 
+    driver: local
+    driver_opts:
+      <<: *common-keys-volume
+      device: :${NFS_DEVICE}/development/code-server/share                        
