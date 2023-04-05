@@ -94,7 +94,7 @@ services:
       placement:
         constraints:
           - node.labels.type == vm 
-          - node.labels.development == true  
+          - node.labels.development == true
 
 networks:
   network_cluster:
