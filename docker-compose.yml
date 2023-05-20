@@ -3,34 +3,34 @@ version: "3.4"
 
 services:
   # Gogs
-  gogs:
-    image: gogs/gogs:latest
-    networks: [network_cluster]
-    restart: on-failure
-    environment:
-      PUID: 1000
-      PGID: 1000
-      TZ: ${TZ}    
-    volumes:
-      - nfs_gogs_data:/data
-    deploy:
-      labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.gogs.rule=Host(`gogs.${DOMAIN_SWARM}`)"
-        - "traefik.http.routers.gogs.entrypoints=websecure"
-        - "traefik.http.routers.gogs.service=gogs"
-        - "traefik.http.routers.gogs.middlewares=noauth-chain@file"
-        - "traefik.http.services.gogs.loadbalancer.server.port=3000"
-        - "traefik.tcp.routers.gogs_ssh.rule=HostSNI(`*`)"
-        - "traefik.tcp.routers.gogs_ssh.entrypoints=ssh"
-        - "traefik.tcp.routers.gogs_ssh.service=gogs_ssh"
-        - "traefik.tcp.services.gogs_ssh.loadbalancer.server.port=22"
-      mode: replicated
-      replicas: 1
-      placement:
-        constraints:
-          - node.labels.type == vm
-          - node.labels.development == true
+  # gogs:
+  #   image: gogs/gogs:latest
+  #   networks: [network_cluster]
+  #   restart: on-failure
+  #   environment:
+  #     PUID: 1000
+  #     PGID: 1000
+  #     TZ: ${TZ}    
+  #   volumes:
+  #     - nfs_gogs_data:/data
+  #   deploy:
+  #     labels:
+  #       - "traefik.enable=true"
+  #       - "traefik.http.routers.gogs.rule=Host(`gogs.${DOMAIN_SWARM}`)"
+  #       - "traefik.http.routers.gogs.entrypoints=websecure"
+  #       - "traefik.http.routers.gogs.service=gogs"
+  #       - "traefik.http.routers.gogs.middlewares=noauth-chain@file"
+  #       - "traefik.http.services.gogs.loadbalancer.server.port=3000"
+  #       - "traefik.tcp.routers.gogs_ssh.rule=HostSNI(`*`)"
+  #       - "traefik.tcp.routers.gogs_ssh.entrypoints=ssh"
+  #       - "traefik.tcp.routers.gogs_ssh.service=gogs_ssh"
+  #       - "traefik.tcp.services.gogs_ssh.loadbalancer.server.port=22"
+  #     mode: replicated
+  #     replicas: 1
+  #     placement:
+  #       constraints:
+  #         - node.labels.type == vm
+  #         - node.labels.development == true
 
   # Gitea
   gitea:
