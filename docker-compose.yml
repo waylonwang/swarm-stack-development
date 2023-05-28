@@ -76,6 +76,7 @@ services:
       - nfs_code-server_data:/config
       - nfs_code-server_attach_base:/swarm/base
       - nfs_code-server_attach_public:/swarm/public
+      - nfs_code-server_attach_workspace:/swarm/Workspaces
     deploy:
       labels:
         - "traefik.enable=true"
@@ -131,3 +132,8 @@ volumes:
     driver_opts:
       <<: *common-keys-volume
       device: :${NFS_DEVICE}/public
+  nfs_code-server_attach_workspace:
+    driver: local
+    driver_opts:
+      <<: *common-keys-volume
+      device: :${NFS_DEVICE}/development/code-server/data/User/Workspaces
