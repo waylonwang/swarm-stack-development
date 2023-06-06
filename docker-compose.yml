@@ -92,6 +92,33 @@ services:
           - node.labels.type == vm
           - node.labels.development == true
 
+  pageplug:
+    image: index.docker.io/cloudtogouser/pageplug-ce
+    networks: [network_cluster]
+    restart: on-failure    
+    environment:
+      PUID: 1000
+      PGID: 1000
+      PASSWORD: ${CODESERVER_PASSWORD}
+      SUDO_PASSWORD: ${CODESERVER_SUDO_PASSWORD}
+      TZ: ${TZ} 
+    volumes:
+      - nfs_pageplug_stacks:/appsmith-stacks    
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.pageplug.rule=Host(`pageplug.${DOMAIN_SWARM}`)"
+        - "traefik.http.routers.pageplug.entrypoints=websecure"
+        - "traefik.http.routers.pageplug.service=pageplug"
+        - "traefik.http.routers.pageplug.middlewares=noauth-chain@file"
+        - "traefik.http.services.pageplug.loadbalancer.server.port=80"
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.type == vm
+          - node.labels.development == true
+
 networks:
   network_cluster:
     external: true
@@ -137,3 +164,8 @@ volumes:
     driver_opts:
       <<: *common-keys-volume
       device: :${NFS_DEVICE}
+  nfs_pageplug_stacks:
+    driver: local
+    driver_opts:
+      <<: *common-keys-volume
+      device: :${NFS_DEVICE}/development/pageplug/stacks
