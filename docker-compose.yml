@@ -99,6 +99,8 @@ services:
     environment:
       PUID: 0
       PGID: 0    
+      CHOWN_HOME: 'yes'
+      CHOWN_EXTRA_OPTS: '-R'
       TZ: ${TZ} 
     volumes:
       - nfs_notebook:/home/jovyan
