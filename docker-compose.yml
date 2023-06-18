@@ -97,8 +97,8 @@ services:
     networks: [network_cluster]
     restart: on-failure
     environment:
-      PUID: 0
-      PGID: 0    
+      PUID: 1000
+      PGID: 1000    
       CHOWN_HOME: 'yes'
       CHOWN_EXTRA_OPTS: '-R'
       TZ: ${TZ} 
