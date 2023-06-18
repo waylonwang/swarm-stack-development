@@ -97,6 +97,8 @@ services:
     networks: [network_cluster]
     restart: on-failure
     environment:
+      PUID: 1000
+      PGID: 1000    
       TZ: ${TZ} 
     volumes:
       - nfs_notebook:/home/jovyan
