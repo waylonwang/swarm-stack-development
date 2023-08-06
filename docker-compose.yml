@@ -77,6 +77,7 @@ services:
     #   - nfs_code-server_attach_base:/swarm/base
     #   - nfs_code-server_attach_public:/swarm/public
       - nfs_code-server_attach_swarm:/swarm
+      - nfs_code-server_attach_website:/website
     deploy:
       labels:
         - "traefik.enable=true"
@@ -190,6 +191,11 @@ volumes:
     driver_opts:
       <<: *common-keys-volume
       device: :${NFS_DEVICE}
+  nfs_code-server_attach_website:
+    driver: local
+    driver_opts:
+      <<: *common-keys-volume
+      device: :/volume1/web/home
   nfs_notebook:
     driver: local
     driver_opts:
