@@ -63,7 +63,8 @@ services:
           - node.labels.development == true
 
   code-server:
-    image: lscr.io/linuxserver/code-server:latest
+    image: registry.cloudvalley.name:4/code-server:0729
+    # image: lscr.io/linuxserver/code-server:latest
     networks: [network_cluster]
     restart: on-failure
     environment:
