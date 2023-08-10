@@ -76,7 +76,7 @@ services:
       - nfs_code-server_data:/config
     #   - nfs_code-server_attach_base:/swarm/base
     #   - nfs_code-server_attach_public:/swarm/public
-      - nfs_code-server_attach_swarm:/swarm
+    #  - nfs_code-server_attach_swarm:/swarm
     #  - nfs_code-server_attach_website:/website
     deploy:
       labels:
