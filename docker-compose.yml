@@ -69,8 +69,8 @@ services:
     networks: [network_cluster]
     restart: on-failure
     environment:
-      PUID: ${MEDIA_PUID}
-      PGID: ${MEDIA_PGID}
+      PUID: ${CODESERVER_PUID}
+      PGID: ${CODESERVER_PGID}
       PASSWORD: ${CODESERVER_PASSWORD}
       SUDO_PASSWORD: ${CODESERVER_SUDO_PASSWORD}
       TZ: ${TZ} 
