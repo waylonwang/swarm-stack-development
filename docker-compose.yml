@@ -116,7 +116,7 @@ services:
         - "traefik.http.routers.notebook.middlewares=noauth-chain@file"
         - "traefik.http.services.notebook.loadbalancer.server.port=8888"
       mode: replicated
-      replicas: 1
+      replicas: 0
       placement:
         constraints:
           - node.labels.type == vm
@@ -142,7 +142,7 @@ services:
         - "traefik.http.routers.pageplug.middlewares=noauth-chain@file"
         - "traefik.http.services.pageplug.loadbalancer.server.port=443"
       mode: replicated
-      replicas: 1
+      replicas: 0
       placement:
         constraints:
           - node.labels.type == vm
