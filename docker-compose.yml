@@ -61,7 +61,7 @@ services:
         - homepage.href=https://git.${DOMAIN_SWARM}:4/
         - homepage.description=Git仓库管理
         - homepage.ping=http://git:3000
-        - homepage.weight=1
+        - homepage.weight=2
       mode: replicated
       replicas: 1
       placement:
@@ -96,7 +96,7 @@ services:
         - "traefik.http.routers.code-server.middlewares=noauth-chain@file"
         - "traefik.http.services.code-server.loadbalancer.server.port=8443"
         - homepage.group=Development
-        - homepage.name=CodeServer
+        - homepage.name=Code Server
         - homepage.icon=codeserver.png
         - homepage.href=https://code.${DOMAIN_SWARM}:4/
         - homepage.description=CodeServer代码编辑服务
