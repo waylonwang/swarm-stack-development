@@ -60,7 +60,7 @@ services:
         - homepage.icon=gitea.png
         - homepage.href=https://git.${DOMAIN_SWARM}:4/
         - homepage.description=Git仓库管理
-        - homepage.ping=http://git:3000
+        - homepage.ping=http://gitea:3000
         - homepage.weight=2
       mode: replicated
       replicas: 1
@@ -100,7 +100,7 @@ services:
         - homepage.icon=codeserver.png
         - homepage.href=https://code.${DOMAIN_SWARM}:4/
         - homepage.description=CodeServer代码编辑服务
-        - homepage.ping=http://code:8443
+        - homepage.ping=http://code-server:8443
         - homepage.weight=1
       mode: replicated
       replicas: 1
