@@ -83,10 +83,10 @@ services:
       TZ: ${TZ} 
     volumes:
       - nfs_code-server_data:/config
-    #   - nfs_code-server_attach_base:/swarm/base
-    #   - nfs_code-server_attach_public:/swarm/public
       - nfs_code-server_attach_swarm:/swarm
       - nfs_code-server_attach_website:/website
+      - server_attach_3rdparty:/dsm0/webman/3rdparty
+      - server_attach_tinymce_plugins:/dsm0/webman/tinymce_plugins
     deploy:
       labels:
         - "traefik.enable=true"
@@ -192,16 +192,6 @@ volumes:
     driver_opts:
       <<: *common-keys-volume
       device: :${NFS_DEVICE}/development/code-server
-#   nfs_code-server_attach_base:
-#     driver: local
-#     driver_opts:
-#       <<: *common-keys-volume
-#       device: :${NFS_DEVICE}/base
-#   nfs_code-server_attach_public:
-#     driver: local
-#     driver_opts:
-#       <<: *common-keys-volume
-#       device: :${NFS_DEVICE}/public
   nfs_code-server_attach_swarm:
     driver: local
     driver_opts:
@@ -212,6 +202,16 @@ volumes:
     driver_opts:
       <<: *common-keys-volume
       device: :/volume1/web/home
+  nfs_code-server_attach_tinymce_plugins:
+    driver: local
+    driver_opts:
+      <<: *common-keys-volume
+      device: :/usr/syno/synoman/webman/modules/TinyMCE/js/tinymce/plugins
+  nfs_code-server_attach_3rdparty:
+    driver: local
+    driver_opts:
+      <<: *common-keys-volume
+      device: :/usr/syno/synoman/webman/3rdparty
   nfs_notebook:
     driver: local
     driver_opts:
