@@ -85,8 +85,8 @@ services:
       - nfs_code-server_data:/config
       - nfs_code-server_attach_swarm:/swarm
       - nfs_code-server_attach_website:/website
-      - server_attach_3rdparty:/dsm0/webman/3rdparty
-      - server_attach_tinymce_plugins:/dsm0/webman/tinymce_plugins
+      - nfs_code-server_attach_3rdparty:/dsm0/webman/3rdparty
+      - nfs_code-server_attach_tinymce_plugins:/dsm0/webman/tinymce_plugins
     deploy:
       labels:
         - "traefik.enable=true"
