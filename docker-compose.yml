@@ -75,6 +75,8 @@ services:
     # 原镜像下载非常慢，会导致更新服务后容器很久才能启动，因此使用自定义镜像
     networks: [network_cluster]
     restart: on-failure
+    ports:
+      - 8443:8443
     environment:
       PUID: ${CODESERVER_PUID}
       PGID: ${CODESERVER_PGID}
