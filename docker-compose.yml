@@ -55,7 +55,7 @@ services:
         - "traefik.tcp.routers.gitea_ssh.entrypoints=ssh"
         - "traefik.tcp.routers.gitea_ssh.service=gitea_ssh"
         - "traefik.tcp.services.gitea_ssh.loadbalancer.server.port=22"
-        - homepage.group=Development
+        - homepage.group=Database & Development
         - homepage.name=Git
         - homepage.icon=gitea.png
         - homepage.href=https://git.${DOMAIN_SWARM}:4/
@@ -97,7 +97,7 @@ services:
         - "traefik.http.routers.code-server.service=code-server"
         - "traefik.http.routers.code-server.middlewares=noauth-chain@file"
         - "traefik.http.services.code-server.loadbalancer.server.port=8443"
-        - homepage.group=Development
+        - homepage.group=Database & Development
         - homepage.name=Code Server
         - homepage.icon=vscode.png
         - homepage.href=https://code.${DOMAIN_SWARM}:4/
