@@ -70,9 +70,9 @@ services:
           - node.labels.development == true
 
   code-server:
-    image: registry.cloudvalley.name:4/code-server:stable
+    # image: registry.cloudvalley.name:4/code-server:stable
     # 原镜像下载非常慢，会导致更新服务后容器很久才能启动，因此使用自定义镜像
-    # image: lscr.io/linuxserver/code-server:latest
+    image: lscr.io/linuxserver/code-server:latest
     networks: [network_cluster]
     restart: on-failure
     ports:
@@ -134,7 +134,7 @@ services:
         - "traefik.http.routers.notebook.middlewares=noauth-chain@file"
         - "traefik.http.services.notebook.loadbalancer.server.port=8888"
       mode: replicated
-      replicas: 0
+      replicas: 1
       placement:
         constraints:
           - node.labels.type == vm
