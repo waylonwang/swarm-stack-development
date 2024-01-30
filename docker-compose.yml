@@ -70,23 +70,19 @@ services:
           - node.labels.development == true
 
   code-server:
-    # image: registry.cloudvalley.name:4/code-server:stable
+    image: registry.cloudvalley.name:4/code-server:stable
+    # image: lscr.io/linuxserver/code-server:latest
     # 原镜像下载非常慢，会导致更新服务后容器很久才能启动，因此使用自定义镜像
-    image: lscr.io/linuxserver/code-server:latest
     networks: [network_cluster]
     restart: on-failure
     ports:
       - 38443:8443
     environment:
-      PUID: 1000
-      PGID: 1000
-      TZ: Asia/Shanghai
-    # 部署到NAS时，环境变量无法传递，需要直接指定
-    #   PUID: ${CODESERVER_PUID}
-    #   PGID: ${CODESERVER_PGID}
-    #   PASSWORD: ${CODESERVER_PASSWORD}
-    #   SUDO_PASSWORD: ${CODESERVER_SUDO_PASSWORD}
-    #   TZ: ${TZ} 
+      PUID: ${CODESERVER_PUID}
+      PGID: ${CODESERVER_PGID}
+      PASSWORD: ${CODESERVER_PASSWORD}
+      SUDO_PASSWORD: ${CODESERVER_SUDO_PASSWORD}
+      TZ: ${TZ} 
     volumes:
       - nfs_code-server_data:/config
       - nfs_code-server_attach_swarm:/swarm
@@ -99,9 +95,7 @@ services:
         - "traefik.http.routers.code-server.rule=Host(`code.${DOMAIN_SWARM}`)"
         - "traefik.http.routers.code-server.entrypoints=websecure"
         - "traefik.http.routers.code-server.service=code-server"
-        # 部署到NAS时，环境变量无法传递，无法设置自带密码，需要开启验证
-        # - "traefik.http.routers.code-server.middlewares=noauth-chain@file"
-        - "traefik.http.routers.code-server.middlewares=auth-chain@file"
+        - "traefik.http.routers.code-server.middlewares=noauth-chain@file"
         - "traefik.http.services.code-server.loadbalancer.server.port=8443"
         - homepage.group=Database & Development
         - homepage.name=Code Server
@@ -114,10 +108,8 @@ services:
       replicas: 1
       placement:
         constraints:
-          # - node.labels.type == vm
-          - node.labels.type == nas
+          - node.labels.type == vm
           - node.labels.development == true
-          - node.labels.nas == backup    
 
   notebook:
     image: jupyter/all-spark-notebook
@@ -140,7 +132,7 @@ services:
         - "traefik.http.routers.notebook.middlewares=noauth-chain@file"
         - "traefik.http.services.notebook.loadbalancer.server.port=8888"
       mode: replicated
-      replicas: 1
+      replicas: 0
       placement:
         constraints:
           - node.labels.type == vm
