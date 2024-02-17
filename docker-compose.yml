@@ -70,7 +70,7 @@ services:
           - node.labels.development == true
 
   code-server:
-    image: registry.cloudvalley.name:4/code-server:stable
+    image: registry.cloudvalley.name:4/linuxserver/code-server:version-4.21.1
     # image: lscr.io/linuxserver/code-server:latest
     # 原镜像下载非常慢，会导致更新服务后容器很久才能启动，因此使用自定义镜像
     networks: [network_cluster]
@@ -109,7 +109,8 @@ services:
       placement:
         constraints:
           - node.labels.type == vm
-          - node.labels.development == true
+          - node.role == manager
+          # - node.labels.development == true
 
   notebook:
     image: jupyter/all-spark-notebook
